@@ -2,13 +2,31 @@ import os
 from pyicloud import PyiCloudService
 from findmyfriends import FindFriendsService
 from credentials import username, password
+from infos import Coordinates
 
 cookie_directory = os.path.join(os.getcwd(), "cookies")
-api = PyiCloudService(username, password, cookie_directory=cookie_directory)
+iphone_api = PyiCloudService(username, password, cookie_directory=cookie_directory)
 
-if api.requires_2fa:
+if iphone_api.requires_2fa:
     code = input("Code 2FA: ")
-    api.validate_2fa_code(code)
+    iphone_api.validate_2fa_code(code)
 
-friends = FindFriendsService(api._get_webservice_url("fmf"), api.session, api.params)
-print(friends.following)
+fmf_api = FindFriendsService(iphone_api._get_webservice_url("fmf"), iphone_api.session, iphone_api.params)
+fmf_api.refresh_client()
+
+following = {friend["invitationAcceptedByEmail"]:friend["id"] for friend in fmf_api.following}
+
+# Using defaults here.
+
+from strategy import Default
+from alert import alert
+
+# Test
+friend = list(following.keys())[0]
+friend_id = following[friend]
+
+check = Default(iphone_api, fmf_api, friend_id)
+
+while True:
+    if check.alert():
+        alert(friend)
