@@ -4,8 +4,10 @@ import polyline
 import json
 
 class Coordinates:
-    def __init__(self, a, b):
-        self.update(a, b)
+    def __init__(self, a=None, b=None):
+        if a and b:
+            self.update(a, b)
+        self.record = dict()
 
     def update(self, a, b):
         self.lat1, self.lng1 = a
@@ -36,6 +38,9 @@ class Coordinates:
     
         return {"duration": response["durations"][0][0],\
                 "distance": response["distances"][0][0]}
+    
+    def _get_index_record(self):
+        return ";".join([",".join([str(i), str(j)]) for i,j in [(self.lat1, self.lng1), (self.lat2, self.lng2)]])
 
     @property
     def distance(self):
@@ -43,8 +48,16 @@ class Coordinates:
 
     @property
     def time(self):
-        return self.travel()["duration"]
+        index = self._get_index_record()
+        if not index in self.record.keys():
+            self.record[index] = self.travel()
+
+        return self.record[index]["duration"]
 
     @property
     def travel_distance(self):
-        return self.travel()["distance"]
+        index = self._get_index_record()
+        if not index in self.record.keys():
+            self.record[index] = self.travel()
+
+        return self.record[index]["distance"]
