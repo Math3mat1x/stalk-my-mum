@@ -1,7 +1,7 @@
-from infos import Coordinates
+from .infos import Coordinates
 import time
 
-class Default():
+class DefaultStrategy():
     """
     Default Strategy.
     """
