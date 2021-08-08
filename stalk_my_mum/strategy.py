@@ -1,5 +1,6 @@
 from .infos import Coordinates
 import time
+import asyncio
 
 class DefaultStrategy():
     """
@@ -20,11 +21,11 @@ class DefaultStrategy():
 
         self.fmf_api.refresh_client()
         friend = self.fmf_api.location_of(self.friend_id)
-        self.friend =  (friend["longitude"], friend["latitude"])
+        self.friend = (friend["longitude"], friend["latitude"])
         
         self.coordinates.update(self.iphone, self.friend)
 
-    def alert(self):
+    async def alert(self):
         # If you're near the friend, wait 30 minutes before the next refresh
         if self.near_friend:
             time.sleep(30 * 60)
@@ -34,7 +35,7 @@ class DefaultStrategy():
         self.time_refresh = time.time()
 
         # If the friend is located at less than 2 km from you
-        if self.coordinates.distance <= 2000:
+        if await self.coordinates.distance <= 2000:
             # If you are already near him, do not alert
             if self.near_friend:
                 return False
@@ -47,12 +48,13 @@ class DefaultStrategy():
             self.near_friend = False
         # Else wait
         else:
-            duration = self.coordinates.time
+            duration = await self.coordinates.time
             duration = (duration - 4*60) / 2
 
             to_wait = duration - (time.time() - start_time)
             if to_wait < 0:
                 return None
 
-            time.sleep(to_wait)
+            print("start to wait {}".format(to_wait))
+            await asyncio.sleep(to_wait)
             return False

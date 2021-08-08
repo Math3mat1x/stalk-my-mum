@@ -54,7 +54,6 @@ class Coordinates:
 
     @property
     async def time(self):
-        print("Let’s start")
         index = self._get_index_record()
         if not index in self.record.keys():
             self.record[index] = await self.travel()
