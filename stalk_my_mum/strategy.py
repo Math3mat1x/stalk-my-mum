@@ -1,4 +1,6 @@
 from .infos import Coordinates
+from . import following
+from .alert import alert
 import time
 import asyncio
 
@@ -7,10 +9,11 @@ class DefaultStrategy():
     Default Strategy.
     """
 
-    def __init__(self, iphone_api, fmf_api, friend_id):
+    def __init__(self, iphone_api, fmf_api, friend):
         self.iphone_api = iphone_api
         self.fmf_api = fmf_api
-        self.friend_id = friend_id
+        self.friend_email = friend
+        self.friend_id = following[friend]
         self.coordinates = Coordinates()
         self.near_friend = False
         self.time_refresh = 0 # time of last refresh
@@ -28,7 +31,8 @@ class DefaultStrategy():
     async def alert(self):
         # If you're near the friend, wait 30 minutes before the next refresh
         if self.near_friend:
-            time.sleep(30 * 60)
+            print(f"You're near {self.friend_email}, sleeping for 30 minutes.")
+            asyncio.sleep(30 * 60)
 
         start_time = time.time()
         self._refresh()
@@ -41,10 +45,12 @@ class DefaultStrategy():
                 return False
             # If you weren't, do alert
             else:
+                await alert(self.friend_email)
                 self.near_friend = True
                 return True
         # If you were near a friend but now he’s located at more than 2 km, reset
         elif self.near_friend:
+            print(f"{self.friend_email} has moved away from you.")
             self.near_friend = False
         # Else wait
         else:
@@ -55,6 +61,6 @@ class DefaultStrategy():
             if to_wait < 0:
                 return None
 
-            print("start to wait {}".format(to_wait))
+            print(f"{self.friend_email}: wait {to_wait} seconds.")
             await asyncio.sleep(to_wait)
             return False

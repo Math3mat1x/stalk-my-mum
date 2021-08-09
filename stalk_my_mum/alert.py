@@ -1,4 +1,4 @@
-def alert(friend):
+async def alert(friend):
     """
     Alert the user using a service of you choice. 
     This has to be filled manually.
