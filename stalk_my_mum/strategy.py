@@ -25,6 +25,7 @@ class DefaultStrategy():
         self.friend_id = following[friend]
         self.coordinates = Coordinates()
         self.near_friend = False
+        self.count = int()
 
     async def _refresh(self):
         """
@@ -44,13 +45,17 @@ class DefaultStrategy():
 
         # If able to receive the location of the friend
         if friend:
+            self.count = int()
             self.friend = (friend["longitude"], friend["latitude"])
             
             self.coordinates.update(self.iphone, self.friend)
         # Otherwise, wait
         else:
-            print(self.friend_email)
+            if self.count == 4:
+                print(f"Unable to find {self.friend_email}")
             await asyncio.sleep(5)
+            self.count += 1
+            await self._refresh()
 
     async def alert(self):
         # If you're near the friend, wait 30 minutes before the next refresh

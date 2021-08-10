@@ -19,4 +19,4 @@ async def alert(friend):
     """
 
     # Example
-    print(bcolors.WARNING + "{} is near you.".format(friend) + bcolors.ENDC)
+    print(bcolors.WARNING + f"{friend} is near you." + bcolors.ENDC)
