@@ -1,5 +1,6 @@
 from .infos import Coordinates
-from . import following, alert
+from . import following
+from .alert import alert
 import time
 import asyncio
 

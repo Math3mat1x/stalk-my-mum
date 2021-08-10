@@ -31,4 +31,3 @@ iphone_api, fmf_api, following = init()
 
 # Using defaults here.
 from .strategy import DefaultStrategy
-from .alert import alert
