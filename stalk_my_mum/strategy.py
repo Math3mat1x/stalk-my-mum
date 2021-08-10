@@ -1,5 +1,5 @@
 from .infos import Coordinates
-from . import following
+from . import following, lookup_dict
 from .alert import alert
 import time
 import asyncio
@@ -18,10 +18,10 @@ class DefaultStrategy():
             friend: email or phone_number of friend
         """
 
-        print(f"Creating {friend}...")
+        self.friend_email = lookup_dict[friend] if friend in lookup_dict.keys() else friend
+        print(f"Creating {self.friend_email}...")
         self.iphone_api = iphone_api
         self.fmf_api = fmf_api
-        self.friend_email = friend
         self.friend_id = following[friend]
         self.coordinates = Coordinates()
         self.near_friend = False

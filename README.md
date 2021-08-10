@@ -17,7 +17,7 @@ pip3 install -r requirements.txt
 
 ## Usage
 
-Fill in credentials.py with your Apple credentials.
+Fill in settings.py with your Apple credentials.
 Run the main.py script. If you have activated 2 Factor Authentification, it will prompt you for your code.
 
 By default, the program outputs everything in your terminal and if a friend is near you, it will be dispalyed in yellow.

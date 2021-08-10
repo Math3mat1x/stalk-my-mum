@@ -1,7 +1,7 @@
 import os
 from pyicloud import PyiCloudService
 from .findmyfriends import FindFriendsService
-from credentials import username, password
+from settings import username, password, lookup_dict
 
 def init():
     """
