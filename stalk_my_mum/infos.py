@@ -1,5 +1,4 @@
 from math import radians, sin, cos, atan2, sqrt
-# import requests
 import aiohttp
 import asyncio
 import polyline
