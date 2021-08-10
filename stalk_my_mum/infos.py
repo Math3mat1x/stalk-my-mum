@@ -27,12 +27,11 @@ class Coordinates:
         return round(earth_radius * c, ndigits=1)
 
     async def travel(self):
-        a = (self.lat1, self.lng1)
-        b = (self.lat2, self.lng2)
+        a = (self.lng1, self.lat1)
+        b = (self.lng2, self.lat2)
 
         url = "http://router.project-osrm.org/table/v1/driving/polyline(" + \
                 polyline.encode([b, a]) + ")"
-
 
         payload = {"sources": 0, "destinations": 1, "annotations": "duration,distance"}
 
@@ -67,17 +66,3 @@ class Coordinates:
             self.record[index] = await self.travel()
 
         return self.record[index]["distance"]
-
-async def test():
-    a = (5.6757872631206885, 47.52696804616896)
-    b = (5.659161387857111, 47.50893169258636)
-    c = (47.10636973360826, 5.954746857889816)
-
-    test_1 = Coordinates(a,b)
-    test_2 = Coordinates(a, c)
-
-    return await asyncio.gather(*(i.time for i in [test_1, test_2]))
-
-if __name__ == "__main__":
-    result = asyncio.run(test())
-    print(result)
