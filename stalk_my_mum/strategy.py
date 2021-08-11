@@ -1,8 +1,31 @@
 from .infos import Coordinates
-from . import following, lookup_dict
+from . import following, lookup_dict, iphone
 from .alert import alert
 import time
 import asyncio
+
+# class iPhone():
+#     def __init__(self,iphone_api):
+#         self.locations = list()
+#         self.iphone_api = iphone_api
+
+#     async def update(self):
+#         refresh = False
+
+#         if len(self.locations) >= 2:
+#             timestamp1, a1, b1 = self.location[0], self.location[-1]
+#             timestamp2, a2, b2 = self.location[0], self.location[-2]
+
+#             if timestamp2 - timestamp1 <= 60:
+#                 distance = Coordinates((a1, b1), (a2, b2))
+#                 if distance <= 30:
+#                     return None
+
+#         loop = asyncio.get_event_loop()
+#         iphone = await loop.run_in_executor(None, self.iphone_api.iphone.location)
+#         self.locations.append((time.time(), iphone[0], iphone[1]))
+
+#         return iphone
 
 class DefaultStrategy():
     """
@@ -37,8 +60,9 @@ class DefaultStrategy():
 
         # loop.run_in_excutor makes PyiCloud asynchronous, right??
         loop = asyncio.get_event_loop()
-        iphone = await loop.run_in_executor(None, self.iphone_api.iphone.location)
-        self.iphone = (iphone["longitude"], iphone["latitude"])
+        phone = await iphone.update()
+        # iphone = await loop.run_in_executor(None, self.iphone_api.iphone.location)
+        self.iphone = (phone["longitude"], phone["latitude"])
 
         await loop.run_in_executor(None, self.fmf_api.refresh_client)
         friend = self.fmf_api.location_of(self.friend_id)

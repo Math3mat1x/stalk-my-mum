@@ -1,6 +1,7 @@
 import os
 from pyicloud import PyiCloudService
 from .findmyfriends import FindFriendsService
+from .infos import iPhone
 from settings import username, password, lookup_dict
 
 def init():
@@ -30,4 +31,5 @@ def init():
 iphone_api, fmf_api, following = init()
 
 # Using defaults here.
+iphone = iPhone(iphone_api)
 from .strategy import DefaultStrategy

@@ -112,3 +112,27 @@ class Coordinates:
             self.record[index] = await self.travel()
 
         return self.record[index]["distance"]
+
+
+class iPhone():
+    def __init__(self,iphone_api):
+        self.locations = list()
+        self.iphone_api = iphone_api
+
+    async def update(self):
+        refresh = False
+
+        if len(self.locations) >= 2:
+            timestamp1, a1, b1 = self.location[0], self.location[-1]
+            timestamp2, a2, b2 = self.location[0], self.location[-2]
+
+            if timestamp2 - timestamp1 <= 60:
+                distance = Coordinates((a1, b1), (a2, b2))
+                if distance <= 30:
+                    return None
+
+        loop = asyncio.get_event_loop()
+        iphone = await loop.run_in_executor(None, self.iphone_api.iphone.location)
+        self.locations.append((time.time(), iphone[0], iphone[1]))
+
+        return iphone
